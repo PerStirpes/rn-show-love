@@ -16,6 +16,7 @@ export default class App extends React.Component {
     hearts: [],
     backgroundColor: randomHex()
   }
+
   handleAddHeart = () => {
     const animation = new Animated.Value(0)
 
@@ -27,6 +28,7 @@ export default class App extends React.Component {
         ],
         backgroundColor: randomHex()
       }),
+
       () => {
         Animated.timing(animation, {
           toValue: height,
