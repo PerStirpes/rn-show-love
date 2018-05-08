@@ -7,32 +7,25 @@ import {
   Text,
   View
 } from "react-native"
-// import randomInt from "./components/randomInt"
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min)) + min
-}
+import { getRandomInt, randomHex } from "./helpers/utilities"
+import Heart from "./components/Heart"
 
 const { width, height } = Dimensions.get("window")
 export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      hearts: []
-    }
-
-    this.handleAddHeart = this.handleAddHeart.bind(this)
+  state = {
+    hearts: [],
+    backgroundColor: randomHex()
   }
-  handleAddHeart() {
+  handleAddHeart = () => {
     const animation = new Animated.Value(0)
+
     this.setState(
       state => ({
         hearts: [
           ...state.hearts,
           { animation, start: getRandomInt(100, width - 100) }
-        ]
+        ],
+        backgroundColor: randomHex()
       }),
       () => {
         Animated.timing(animation, {
@@ -90,7 +83,7 @@ export default class App extends React.Component {
                 opacity: opacityInterpolate
               }
 
-              return <Heart key={index} style={heartStyle} />
+              return <Heart key={index} style={[heartStyle]} />
             })}
           </View>
         </TouchableWithoutFeedback>
@@ -99,41 +92,8 @@ export default class App extends React.Component {
   }
 }
 
-const Heart = ({ style }) => (
-  <Animated.View style={[styles.heart, style]}>
-    <View style={[styles.heartShape, styles.leftHeart]} />
-    <View style={[styles.heartShape, styles.rightHeart]} />
-  </Animated.View>
-)
-
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  heart: {
-    width: 50,
-    height: 50,
-    position: "absolute"
-  },
-  heartShape: {
-    width: 30,
-    height: 45,
-    position: "absolute",
-    top: 0,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    backgroundColor: "#6427d1"
-  },
-  leftHeart: {
-    transform: [{ rotate: "-45deg" }],
-    left: 5
-  },
-  rightHeart: {
-    transform: [
-      {
-        rotate: "45deg"
-      }
-    ],
-    right: 5
   }
 })
