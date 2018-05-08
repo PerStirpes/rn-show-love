@@ -7,7 +7,13 @@ import {
   Text,
   View
 } from "react-native"
-import randomInt from "./components/randomInt"
+// import randomInt from "./components/randomInt"
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
+}
 
 const { width, height } = Dimensions.get("window")
 export default class App extends React.Component {
@@ -25,7 +31,7 @@ export default class App extends React.Component {
       state => ({
         hearts: [
           ...state.hearts,
-          { animation, start: randomInt(100, width - 100) }
+          { animation, start: getRandomInt(100, width - 100) }
         ]
       }),
       () => {
@@ -48,6 +54,43 @@ export default class App extends React.Component {
                 inputRange: [0, height],
                 outputRange: [height - 50, 0]
               })
+
+              const opacityInterpolate = animation.interpolate({
+                inputRange: [0, height - 200],
+                outputRange: [1, 0]
+              })
+
+              const scaleInterpolate = animation.interpolate({
+                inputRange: [0, 15, 30],
+                outputRange: [0, 1.2, 1],
+                extrapolate: "clamp"
+              })
+
+              const wobbleInterpolate = animation.interpolate({
+                inputRange: [
+                  0,
+                  dividedHeight * 1,
+                  dividedHeight * 2,
+                  dividedHeight * 3,
+                  dividedHeight * 4,
+                  dividedHeight * 5,
+                  dividedHeight * 6
+                ],
+                outputRange: [0, 15, -15, 15, -15, 15, -15],
+                extrapolate: "clamp"
+              })
+
+              const heartStyle = {
+                left: start,
+                transform: [
+                  { translateY: positionInterpolate },
+                  { translateX: wobbleInterpolate },
+                  { scale: scaleInterpolate }
+                ],
+                opacity: opacityInterpolate
+              }
+
+              return <Heart key={index} style={heartStyle} />
             })}
           </View>
         </TouchableWithoutFeedback>
@@ -88,9 +131,9 @@ const styles = StyleSheet.create({
   rightHeart: {
     transform: [
       {
-        rotate: "45deg",
-        right: 5
+        rotate: "45deg"
       }
-    ]
+    ],
+    right: 5
   }
 })
